@@ -1,5 +1,6 @@
 //! CLI tool for interacting with a pmtiles archive built on top of the rust pmtiles crate.
 
+mod extract;
 mod show;
 
 use clap::{Parser, Subcommand};
@@ -14,6 +15,8 @@ struct Cli {
 
 #[derive(Subcommand, Debug)]
 enum Commands {
+    /// Extract a subset of tiles from a `PMTiles` archive
+    Extract(extract::Args),
     /// Inspect a local or remote archive
     Show(show::Args),
 }
@@ -27,6 +30,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let cli = Cli::parse();
 
     match cli.command {
+        Commands::Extract(args) => extract::run(args).await,
         Commands::Show(args) => show::run(args).await,
     }
 }
